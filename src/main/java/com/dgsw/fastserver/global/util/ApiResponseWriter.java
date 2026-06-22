@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+// 임시로
 @Component
 public class ApiResponseWriter {
 

@@ -3,6 +3,8 @@ package com.dgsw.fastserver.domain.volunteer.service;
 import com.dgsw.fastserver.domain.user.entity.User;
 import com.dgsw.fastserver.domain.user.repository.UserRepository;
 import com.dgsw.fastserver.domain.volunteer.dto.response.VolunteerApplicationResponse;
+import com.dgsw.fastserver.domain.volunteer.dto.response.StudentVolunteerApplicationStatusResponse;
+import com.dgsw.fastserver.domain.volunteer.dto.response.TeacherVolunteerApplicantStatusResponse;
 import com.dgsw.fastserver.domain.volunteer.entity.VolunteerApplicationEntity;
 import com.dgsw.fastserver.domain.volunteer.dto.request.VolunteerRequest;
 import com.dgsw.fastserver.domain.volunteer.dto.response.VolunteerResponse;
@@ -28,6 +30,7 @@ public class VolunteerService {
     public VolunteerResponse postVolunteer(VolunteerRequest volunteerRequest) {
         VolunteerEntity volunteer = new VolunteerEntity();
         volunteer.setVolunteerId(volunteerRequest.volunteerId());
+        volunteer.setAuthorUserId(volunteerRequest.authorUserId());
         volunteer.setParticipantCount(volunteerRequest.participantCount());
         volunteer.setLocation(volunteerRequest.location());
         volunteer.setParticipationTime(volunteerRequest.participationTime());
@@ -66,6 +69,26 @@ public class VolunteerService {
         volunteer.setWorkStatus(volunteerRequest.workStatus());
 
         return VolunteerResponse.from(volunteerRepository.save(volunteer));
+    }
+
+    public List<StudentVolunteerApplicationStatusResponse> getMyVolunteerApplications(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw ApplicationException.of(VolunteerStatusCode.VOLUNTEER_APPLICANT_NOT_FOUND);
+        }
+
+        return volunteerApplicationRepository.findAllByUser_Id(userId).stream()
+                .map(StudentVolunteerApplicationStatusResponse::from)
+                .collect(Collectors.toList());
+    }
+
+    public List<TeacherVolunteerApplicantStatusResponse> getReceivedVolunteerApplications(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw ApplicationException.of(VolunteerStatusCode.VOLUNTEER_APPLICANT_NOT_FOUND);
+        }
+
+        return volunteerApplicationRepository.findAllByVolunteer_AuthorUserId(userId).stream()
+                .map(TeacherVolunteerApplicantStatusResponse::from)
+                .collect(Collectors.toList());
     }
 
     public VolunteerApplicationResponse applyVolunteer(Long volunteerId, Long userId) {

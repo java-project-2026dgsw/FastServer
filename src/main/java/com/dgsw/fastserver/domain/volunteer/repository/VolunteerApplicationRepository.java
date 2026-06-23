@@ -4,6 +4,7 @@ import com.dgsw.fastserver.domain.volunteer.entity.VolunteerApplicationEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -11,4 +12,8 @@ public interface VolunteerApplicationRepository extends JpaRepository<VolunteerA
     boolean existsByVolunteer_IdAndUser_Id(Long volunteerId, Long userId);
 
     Optional<VolunteerApplicationEntity> findByVolunteer_IdAndUser_Id(Long volunteerId, Long userId);
+
+    List<VolunteerApplicationEntity> findAllByUser_Id(Long userId);
+
+    List<VolunteerApplicationEntity> findAllByVolunteer_AuthorUserId(Long authorUserId);
 }

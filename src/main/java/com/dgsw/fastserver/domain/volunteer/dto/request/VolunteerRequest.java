@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 
 public record VolunteerRequest(
         Long volunteerId,
+        Long authorUserId,
         int participantCount,
         String location,
         LocalDateTime participationTime,

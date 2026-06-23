@@ -1,6 +1,8 @@
 package com.dgsw.fastserver.domain.volunteer.controller;
 
 import com.dgsw.fastserver.domain.volunteer.dto.request.VolunteerRequest;
+import com.dgsw.fastserver.domain.volunteer.dto.response.StudentVolunteerApplicationStatusResponse;
+import com.dgsw.fastserver.domain.volunteer.dto.response.TeacherVolunteerApplicantStatusResponse;
 import com.dgsw.fastserver.domain.volunteer.dto.response.VolunteerApplicationResponse;
 import com.dgsw.fastserver.domain.volunteer.dto.response.VolunteerResponse;
 import com.dgsw.fastserver.domain.volunteer.service.VolunteerService;
@@ -61,5 +63,17 @@ public class VolunteerController {
             @RequestParam Long userId) {
         volunteerService.cancelVolunteerApplication(volunteerId, userId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/volunteer/applications/me")
+    public ResponseEntity<ApiResponse<List<StudentVolunteerApplicationStatusResponse>>> getMyVolunteerApplications(
+            @RequestParam Long userId) {
+        return ResponseEntity.ok(ApiResponse.ok(volunteerService.getMyVolunteerApplications(userId)));
+    }
+
+    @GetMapping("/volunteer/applications/received")
+    public ResponseEntity<ApiResponse<List<TeacherVolunteerApplicantStatusResponse>>> getReceivedVolunteerApplications(
+            @RequestParam Long userId) {
+        return ResponseEntity.ok(ApiResponse.ok(volunteerService.getReceivedVolunteerApplications(userId)));
     }
 }

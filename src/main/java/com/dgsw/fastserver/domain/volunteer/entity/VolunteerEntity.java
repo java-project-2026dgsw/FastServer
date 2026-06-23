@@ -18,6 +18,9 @@ public class VolunteerEntity extends Base {
     @Column(name = "volunteer_id")
     private Long volunteerId;
 
+    @Column(name = "author_user_id")
+    private Long authorUserId;
+
     @Column(name = "participant_count")
     @ColumnDefault(value = "0")
     private int participantCount;

@@ -18,6 +18,7 @@ public class User {
     private String name;
     private String studentId;
     private String subject;
+    private String password;
 
     @Enumerated(EnumType.STRING)
     private UserRole role;
@@ -25,4 +26,6 @@ public class User {
     public void setName(String name) { this.name = name; }
     public void setStudentId(String studentId) { this.studentId = studentId; }
     public void setSubject(String subject) { this.subject = subject; }
+    public void setPassword(String password) { this.password = password; }
+    public void setRole(UserRole role) { this.role = role; }
 }

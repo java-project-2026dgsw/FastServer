@@ -1,6 +1,7 @@
 package com.dgsw.fastserver.domain.user.controller;
 
-import com.dgsw.fastserver.domain.user.dto.request.UserSignupRequest;
+import com.dgsw.fastserver.domain.user.dto.request.StudentSignupRequest;
+import com.dgsw.fastserver.domain.user.dto.request.TeacherSignupRequest;
 import com.dgsw.fastserver.domain.user.dto.response.UserSignupResponse;
 import com.dgsw.fastserver.domain.user.service.UserAccountService;
 import com.dgsw.fastserver.global.data.ApiResponse;
@@ -18,8 +19,13 @@ public class UserAccountController {
 
     private final UserAccountService userAccountService;
 
-    @PostMapping("/signup")
-    public ResponseEntity<ApiResponse<UserSignupResponse>> signup(@RequestBody UserSignupRequest request) {
-        return ResponseEntity.ok(ApiResponse.ok(userAccountService.signup(request)));
+    @PostMapping("/signup/student")
+    public ResponseEntity<ApiResponse<UserSignupResponse>> signupStudent(@RequestBody StudentSignupRequest request) {
+        return ResponseEntity.ok(ApiResponse.ok(userAccountService.signupStudent(request)));
+    }
+
+    @PostMapping("/signup/teacher")
+    public ResponseEntity<ApiResponse<UserSignupResponse>> signupTeacher(@RequestBody TeacherSignupRequest request) {
+        return ResponseEntity.ok(ApiResponse.ok(userAccountService.signupTeacher(request)));
     }
 }

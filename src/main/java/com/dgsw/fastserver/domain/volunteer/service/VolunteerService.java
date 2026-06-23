@@ -1,9 +1,14 @@
 package com.dgsw.fastserver.domain.volunteer.service;
 
+import com.dgsw.fastserver.domain.user.User;
+import com.dgsw.fastserver.domain.user.repository.UserRepository;
+import com.dgsw.fastserver.domain.volunteer.dto.response.VolunteerApplicationResponse;
+import com.dgsw.fastserver.domain.volunteer.entity.VolunteerApplicationEntity;
 import com.dgsw.fastserver.domain.volunteer.dto.request.VolunteerRequest;
 import com.dgsw.fastserver.domain.volunteer.dto.response.VolunteerResponse;
 import com.dgsw.fastserver.domain.volunteer.entity.VolunteerEntity;
 import com.dgsw.fastserver.domain.volunteer.exceptions.VolunteerStatusCode;
+import com.dgsw.fastserver.domain.volunteer.repository.VolunteerApplicationRepository;
 import com.dgsw.fastserver.domain.volunteer.repository.VolunteerRepository;
 import com.dgsw.fastserver.global.exception.exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +22,8 @@ import java.util.stream.Collectors;
 public class VolunteerService {
 
     private final VolunteerRepository volunteerRepository;
+    private final VolunteerApplicationRepository volunteerApplicationRepository;
+    private final UserRepository userRepository;
 
     public VolunteerResponse postVolunteer(VolunteerRequest volunteerRequest) {
         VolunteerEntity volunteer = new VolunteerEntity();
@@ -59,5 +66,37 @@ public class VolunteerService {
         volunteer.setWorkStatus(volunteerRequest.workStatus());
 
         return VolunteerResponse.from(volunteerRepository.save(volunteer));
+    }
+
+    public VolunteerApplicationResponse applyVolunteer(Long volunteerId, Long userId) {
+        VolunteerEntity volunteer = volunteerRepository.findById(volunteerId)
+                .orElseThrow(() -> ApplicationException.of(VolunteerStatusCode.VOLUNTEER_NOT_FOUND));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> ApplicationException.of(VolunteerStatusCode.VOLUNTEER_APPLICANT_NOT_FOUND));
+
+        if (volunteerApplicationRepository.existsByVolunteer_IdAndUser_Id(volunteerId, userId)) {
+            throw ApplicationException.of(VolunteerStatusCode.VOLUNTEER_ALREADY_APPLIED);
+        }
+
+        VolunteerApplicationEntity application = new VolunteerApplicationEntity();
+        application.setVolunteer(volunteer);
+        application.setUser(user);
+
+        return VolunteerApplicationResponse.from(volunteerApplicationRepository.save(application));
+    }
+
+    public void cancelVolunteerApplication(Long volunteerId, Long userId) {
+        if (!volunteerRepository.existsById(volunteerId)) {
+            throw ApplicationException.of(VolunteerStatusCode.VOLUNTEER_NOT_FOUND);
+        }
+
+        if (!userRepository.existsById(userId)) {
+            throw ApplicationException.of(VolunteerStatusCode.VOLUNTEER_APPLICANT_NOT_FOUND);
+        }
+
+        VolunteerApplicationEntity application = volunteerApplicationRepository.findByVolunteer_IdAndUser_Id(volunteerId, userId)
+                .orElseThrow(() -> ApplicationException.of(VolunteerStatusCode.VOLUNTEER_APPLICATION_NOT_FOUND));
+
+        volunteerApplicationRepository.delete(application);
     }
 }

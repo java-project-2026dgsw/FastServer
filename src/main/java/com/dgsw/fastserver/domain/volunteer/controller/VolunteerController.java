@@ -1,6 +1,7 @@
 package com.dgsw.fastserver.domain.volunteer.controller;
 
 import com.dgsw.fastserver.domain.volunteer.dto.request.VolunteerRequest;
+import com.dgsw.fastserver.domain.volunteer.dto.response.VolunteerApplicationResponse;
 import com.dgsw.fastserver.domain.volunteer.dto.response.VolunteerResponse;
 import com.dgsw.fastserver.domain.volunteer.service.VolunteerService;
 import com.dgsw.fastserver.global.data.ApiResponse;
@@ -44,6 +45,21 @@ public class VolunteerController {
     @DeleteMapping("/volunteer")
     public ResponseEntity<Void> deleteVolunteer(@RequestParam(name = "id") Long id) {
         volunteerService.deleteVolunteer(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/volunteer/apply")
+    public ResponseEntity<ApiResponse<VolunteerApplicationResponse>> applyVolunteer(
+            @RequestParam Long volunteerId,
+            @RequestParam Long userId) {
+        return ResponseEntity.ok(ApiResponse.ok(volunteerService.applyVolunteer(volunteerId, userId)));
+    }
+
+    @DeleteMapping("/volunteer/apply")
+    public ResponseEntity<Void> cancelVolunteerApplication(
+            @RequestParam Long volunteerId,
+            @RequestParam Long userId) {
+        volunteerService.cancelVolunteerApplication(volunteerId, userId);
         return ResponseEntity.noContent().build();
     }
 }

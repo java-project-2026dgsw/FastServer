@@ -11,9 +11,7 @@ public class MyPageResponse {
     private String name;
     private String role;
 
-    // 학생 전용 필드
     private String studentId;
 
-    // 선생님 전용 필드
     private String subject;
 }

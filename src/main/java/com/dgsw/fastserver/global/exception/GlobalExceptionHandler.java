@@ -42,7 +42,9 @@ public class GlobalExceptionHandler {
         Map<String, String> details = new HashMap<>();
 
         ex.getBindingResult().getAllErrors().forEach(error -> {
-            String field = ((FieldError) error).getField();
+            String field = error instanceof FieldError fieldError
+                    ? fieldError.getField()
+                    : error.getObjectName();
             String message = error.getDefaultMessage() != null
                     ? error.getDefaultMessage()
                     : "잘못된 입력값입니다.";
@@ -66,13 +68,13 @@ public class GlobalExceptionHandler {
             HttpRequestMethodNotSupportedException ex) {
 
         ErrorResponse error = ErrorResponse.of(
-                CommonStatusCode.ENDPOINT_NOT_FOUND.getCode(),
-                CommonStatusCode.ENDPOINT_NOT_FOUND.getMessage()
+                CommonStatusCode.METHOD_NOT_ALLOWED.getCode(),
+                CommonStatusCode.METHOD_NOT_ALLOWED.getMessage()
         );
 
         return ResponseEntity
-                .status(CommonStatusCode.ENDPOINT_NOT_FOUND.getHttpStatus())
-                .body(ApiResponse.error(CommonStatusCode.ENDPOINT_NOT_FOUND.getHttpStatus(), error));
+                .status(CommonStatusCode.METHOD_NOT_ALLOWED.getHttpStatus())
+                .body(ApiResponse.error(CommonStatusCode.METHOD_NOT_ALLOWED.getHttpStatus(), error));
     }
 
     @ExceptionHandler(ConstraintViolationException.class)

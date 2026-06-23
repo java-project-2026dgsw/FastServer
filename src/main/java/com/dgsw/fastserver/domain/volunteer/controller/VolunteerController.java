@@ -34,7 +34,7 @@ public class VolunteerController {
         return ResponseEntity.ok(ApiResponse.ok(volunteerService.postVolunteer(request)));
     }
 
-    @PutMapping("/volunteer")
+    @PatchMapping("/volunteer")
     public ResponseEntity<ApiResponse<VolunteerResponse>> putVolunteer(
             @RequestParam(name = "id") Long id,
             @RequestBody VolunteerRequest request) {

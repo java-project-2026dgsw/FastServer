@@ -7,7 +7,6 @@ import lombok.*;
 @Entity
 @Table(name = "users")
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
@@ -17,13 +16,13 @@ public class User {
     private Long id;
 
     private String name;
-
-    // 학생 전용: 학번
     private String studentId;
-
-    // 선생님 전용: 담당 과목
     private String subject;
 
     @Enumerated(EnumType.STRING)
     private UserRole role;
+
+    public void setName(String name) { this.name = name; }
+    public void setStudentId(String studentId) { this.studentId = studentId; }
+    public void setSubject(String subject) { this.subject = subject; }
 }

@@ -3,7 +3,6 @@ package com.dgsw.fastserver.domain.user.dto.request;
 import lombok.*;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class MyPageUpdateRequest {

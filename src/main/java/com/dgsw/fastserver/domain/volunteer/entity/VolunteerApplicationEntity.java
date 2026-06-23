@@ -1,6 +1,6 @@
 package com.dgsw.fastserver.domain.volunteer.entity;
 
-import com.dgsw.fastserver.domain.user.User;
+import com.dgsw.fastserver.domain.user.entity.User;
 import com.dgsw.fastserver.global.entity.Base;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

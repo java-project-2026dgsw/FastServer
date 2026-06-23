@@ -1,6 +1,6 @@
 package com.dgsw.fastserver.domain.user.dto.response;
 
-import com.dgsw.fastserver.domain.user.User;
+import com.dgsw.fastserver.domain.user.entity.User;
 import com.dgsw.fastserver.domain.user.enums.UserRole;
 
 public record UserSignupResponse(

@@ -1,8 +1,8 @@
 package com.dgsw.fastserver.domain.user.service;
 
-import com.dgsw.fastserver.domain.user.User;
 import com.dgsw.fastserver.domain.user.dto.request.UserSignupRequest;
 import com.dgsw.fastserver.domain.user.dto.response.UserSignupResponse;
+import com.dgsw.fastserver.domain.user.entity.User;
 import com.dgsw.fastserver.domain.user.enums.UserRole;
 import com.dgsw.fastserver.domain.user.exceptions.UserStatusCode;
 import com.dgsw.fastserver.domain.user.repository.UserRepository;

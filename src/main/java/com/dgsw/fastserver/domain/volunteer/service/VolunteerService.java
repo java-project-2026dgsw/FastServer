@@ -1,6 +1,6 @@
 package com.dgsw.fastserver.domain.volunteer.service;
 
-import com.dgsw.fastserver.domain.user.User;
+import com.dgsw.fastserver.domain.user.entity.User;
 import com.dgsw.fastserver.domain.user.repository.UserRepository;
 import com.dgsw.fastserver.domain.volunteer.dto.response.VolunteerApplicationResponse;
 import com.dgsw.fastserver.domain.volunteer.entity.VolunteerApplicationEntity;

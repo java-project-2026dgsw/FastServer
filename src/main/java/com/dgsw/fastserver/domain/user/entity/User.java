@@ -1,4 +1,4 @@
-package com.dgsw.fastserver.domain.user;
+package com.dgsw.fastserver.domain.user.entity;
 
 import com.dgsw.fastserver.domain.user.enums.UserRole;
 import jakarta.persistence.*;

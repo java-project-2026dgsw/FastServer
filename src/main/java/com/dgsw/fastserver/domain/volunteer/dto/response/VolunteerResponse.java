@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 public record VolunteerResponse(
         Long id,
+        Long authorUserId,
         int participantCount,
         String location,
         LocalDateTime participationTime,
@@ -15,6 +16,7 @@ public record VolunteerResponse(
     public static VolunteerResponse from(VolunteerEntity volunteer) {
         return new VolunteerResponse(
                 volunteer.getId(),
+                volunteer.getAuthorUserId(),
                 volunteer.getParticipantCount(),
                 volunteer.getLocation(),
                 volunteer.getParticipationTime(),

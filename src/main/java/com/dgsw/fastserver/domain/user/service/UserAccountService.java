@@ -1,6 +1,7 @@
 package com.dgsw.fastserver.domain.user.service;
 
-import com.dgsw.fastserver.domain.user.dto.request.UserSignupRequest;
+import com.dgsw.fastserver.domain.user.dto.request.StudentSignupRequest;
+import com.dgsw.fastserver.domain.user.dto.request.TeacherSignupRequest;
 import com.dgsw.fastserver.domain.user.dto.response.UserSignupResponse;
 import com.dgsw.fastserver.domain.user.entity.User;
 import com.dgsw.fastserver.domain.user.enums.UserRole;
@@ -19,50 +20,50 @@ public class UserAccountService {
     private final UserRepository userRepository;
 
     @Transactional
-    public UserSignupResponse signup(UserSignupRequest request) {
-        validateCommonFields(request);
-
-        if (request.role() == UserRole.STUDENT) {
-            validateStudentSignup(request);
-        } else {
-            validateTeacherSignup(request);
-        }
+    public UserSignupResponse signupStudent(StudentSignupRequest request) {
+        validateStudentSignup(request);
 
         User user = new User();
         user.setName(request.name().trim());
+        user.setStudentId(request.studentId().trim());
+        user.setSubject(null);
         user.setPassword(request.password().trim());
-        user.setRole(request.role());
-
-        if (request.role() == UserRole.STUDENT) {
-            user.setStudentId(request.studentId().trim());
-            user.setSubject(null);
-        } else {
-            user.setStudentId(null);
-            user.setSubject(request.subject().trim());
-        }
+        user.setRole(UserRole.STUDENT);
 
         return UserSignupResponse.from(userRepository.save(user));
     }
 
-    private void validateCommonFields(UserSignupRequest request) {
-        if (request == null) {
-            throw ApplicationException.of(CommonStatusCode.INVALID_ARGUMENT, "회원가입 요청이 비어 있습니다.");
-        }
+    @Transactional
+    public UserSignupResponse signupTeacher(TeacherSignupRequest request) {
+        validateTeacherSignup(request);
 
-        if (request.role() == null) {
-            throw ApplicationException.of(CommonStatusCode.INVALID_ARGUMENT, "사용자 역할은 필수입니다.");
-        }
+        User user = new User();
+        user.setName(request.name().trim());
+        user.setStudentId(null);
+        user.setSubject(request.subject().trim());
+        user.setPassword(request.password().trim());
+        user.setRole(UserRole.TEACHER);
 
-        if (isBlank(request.name())) {
+        return UserSignupResponse.from(userRepository.save(user));
+    }
+
+    private void validateCommonFields(String name, String password) {
+        if (isBlank(name)) {
             throw ApplicationException.of(CommonStatusCode.INVALID_ARGUMENT, "이름은 필수입니다.");
         }
 
-        if (isBlank(request.password())) {
+        if (isBlank(password)) {
             throw ApplicationException.of(CommonStatusCode.INVALID_ARGUMENT, "비밀번호는 필수입니다.");
         }
     }
 
-    private void validateStudentSignup(UserSignupRequest request) {
+    private void validateStudentSignup(StudentSignupRequest request) {
+        if (request == null) {
+            throw ApplicationException.of(CommonStatusCode.INVALID_ARGUMENT, "회원가입 요청이 비어 있습니다.");
+        }
+
+        validateCommonFields(request.name(), request.password());
+
         if (isBlank(request.studentId())) {
             throw ApplicationException.of(CommonStatusCode.INVALID_ARGUMENT, "학생 회원가입에는 학번이 필요합니다.");
         }
@@ -72,7 +73,13 @@ public class UserAccountService {
         }
     }
 
-    private void validateTeacherSignup(UserSignupRequest request) {
+    private void validateTeacherSignup(TeacherSignupRequest request) {
+        if (request == null) {
+            throw ApplicationException.of(CommonStatusCode.INVALID_ARGUMENT, "회원가입 요청이 비어 있습니다.");
+        }
+
+        validateCommonFields(request.name(), request.password());
+
         if (isBlank(request.subject())) {
             throw ApplicationException.of(CommonStatusCode.INVALID_ARGUMENT, "선생님 회원가입에는 담당 과목이 필요합니다.");
         }

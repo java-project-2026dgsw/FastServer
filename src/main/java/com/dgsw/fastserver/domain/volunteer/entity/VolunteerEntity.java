@@ -7,7 +7,6 @@ import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
-import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
 
@@ -16,7 +15,6 @@ import java.time.LocalDateTime;
 @Setter
 public class VolunteerEntity extends Base {
 
-    @Id
     @Column(name = "volunteer_id")
     private Long volunteerId;
 
@@ -40,10 +38,4 @@ public class VolunteerEntity extends Base {
     @Column(name = "is_deleted")
     @ColumnDefault(value = "false")
     private boolean isDeleted;
-
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 }

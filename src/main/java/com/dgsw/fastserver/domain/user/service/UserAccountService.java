@@ -1,6 +1,8 @@
 package com.dgsw.fastserver.domain.user.service;
 
+import com.dgsw.fastserver.domain.user.dto.request.StudentLoginRequest;
 import com.dgsw.fastserver.domain.user.dto.request.StudentSignupRequest;
+import com.dgsw.fastserver.domain.user.dto.request.TeacherLoginRequest;
 import com.dgsw.fastserver.domain.user.dto.request.TeacherSignupRequest;
 import com.dgsw.fastserver.domain.user.dto.response.UserSignupResponse;
 import com.dgsw.fastserver.domain.user.entity.User;
@@ -45,6 +47,50 @@ public class UserAccountService {
         user.setRole(UserRole.TEACHER);
 
         return UserSignupResponse.from(userRepository.save(user));
+    }
+
+    @Transactional(readOnly = true)
+    public UserSignupResponse loginStudent(StudentLoginRequest request) {
+        if (request == null) {
+            throw ApplicationException.of(CommonStatusCode.INVALID_ARGUMENT, "로그인 요청이 비어 있습니다.");
+        }
+
+        if (isBlank(request.studentId()) || isBlank(request.password())) {
+            throw ApplicationException.of(CommonStatusCode.INVALID_ARGUMENT, "학번과 비밀번호는 필수입니다.");
+        }
+
+        User user = userRepository.findByStudentId(request.studentId().trim())
+                .orElseThrow(() -> ApplicationException.of(UserStatusCode.STUDENT_LOGIN_FAILED));
+
+        if (!user.getPassword().equals(request.password().trim())) {
+            throw ApplicationException.of(UserStatusCode.STUDENT_LOGIN_FAILED);
+        }
+
+        return UserSignupResponse.from(user);
+    }
+
+    @Transactional(readOnly = true)
+    public UserSignupResponse loginTeacher(TeacherLoginRequest request) {
+        if (request == null) {
+            throw ApplicationException.of(CommonStatusCode.INVALID_ARGUMENT, "로그인 요청이 비어 있습니다.");
+        }
+
+        if (isBlank(request.name()) || isBlank(request.subject()) || isBlank(request.password())) {
+            throw ApplicationException.of(CommonStatusCode.INVALID_ARGUMENT, "이름, 담당 과목, 비밀번호는 필수입니다.");
+        }
+
+        User user = userRepository.findByRoleAndNameAndSubject(
+                        UserRole.TEACHER,
+                        request.name().trim(),
+                        request.subject().trim()
+                )
+                .orElseThrow(() -> ApplicationException.of(UserStatusCode.TEACHER_LOGIN_FAILED));
+
+        if (!user.getPassword().equals(request.password().trim())) {
+            throw ApplicationException.of(UserStatusCode.TEACHER_LOGIN_FAILED);
+        }
+
+        return UserSignupResponse.from(user);
     }
 
     private void validateCommonFields(String name, String password) {

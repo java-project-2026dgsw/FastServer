@@ -1,6 +1,8 @@
 package com.dgsw.fastserver.domain.user.service;
 
+import com.dgsw.fastserver.domain.user.dto.request.StudentLoginRequest;
 import com.dgsw.fastserver.domain.user.dto.request.StudentSignupRequest;
+import com.dgsw.fastserver.domain.user.dto.request.TeacherLoginRequest;
 import com.dgsw.fastserver.domain.user.dto.request.TeacherSignupRequest;
 import com.dgsw.fastserver.domain.user.dto.response.UserSignupResponse;
 import com.dgsw.fastserver.domain.user.entity.User;
@@ -57,5 +59,33 @@ class UserAccountServiceTest {
         assertEquals(UserRole.TEACHER, savedUser.getRole());
         assertEquals("수학", savedUser.getSubject());
         assertNull(savedUser.getStudentId());
+    }
+
+    @Test
+    void loginStudentReturnsMatchingStudentAccount() {
+        userAccountService.signupStudent(new StudentSignupRequest("홍길동", "2401", "1234"));
+
+        UserSignupResponse response = userAccountService.loginStudent(
+                new StudentLoginRequest("2401", "1234")
+        );
+
+        assertEquals(UserRole.STUDENT, response.role());
+        assertEquals("홍길동", response.name());
+        assertEquals("2401", response.studentId());
+        assertNull(response.subject());
+    }
+
+    @Test
+    void loginTeacherReturnsMatchingTeacherAccount() {
+        userAccountService.signupTeacher(new TeacherSignupRequest("김선생", "수학", "1234"));
+
+        UserSignupResponse response = userAccountService.loginTeacher(
+                new TeacherLoginRequest("김선생", "수학", "1234")
+        );
+
+        assertEquals(UserRole.TEACHER, response.role());
+        assertEquals("김선생", response.name());
+        assertEquals("수학", response.subject());
+        assertNull(response.studentId());
     }
 }
